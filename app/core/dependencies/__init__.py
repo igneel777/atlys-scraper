@@ -1,0 +1,1 @@
+from .service_dependencies import get_product_service

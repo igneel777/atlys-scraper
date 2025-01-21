@@ -5,6 +5,7 @@ from app.core.notifications.notification_sender import NotificationSender
 
 logger = get_task_logger(__name__)
 
-def notification_send(notification_payload:NotificationPayload):
+
+def notification_send(notification_payload: NotificationPayload):
     notification_sender = NotificationSender(logger)
     notification_sender.send_notification(notification_payload)

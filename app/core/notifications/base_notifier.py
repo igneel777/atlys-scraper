@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from app.core.models.notification import NotificationPayload
+
 
 class BaseNotifier:
     @abstractmethod
@@ -7,5 +9,5 @@ class BaseNotifier:
         pass
 
     @abstractmethod
-    def send_notification(self, notification_payload:NotificationPayload):
+    def send_notification(self, notification_payload: NotificationPayload):
         pass

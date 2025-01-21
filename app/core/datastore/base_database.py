@@ -1,5 +1,6 @@
-from typing_extensions import Any
 from abc import ABC, abstractmethod
+
+from typing_extensions import Any
 
 
 class BaseDatabase(ABC):
@@ -12,4 +13,3 @@ class BaseDatabase(ABC):
     @abstractmethod
     def get_connection(self):
         pass
-    

@@ -13,4 +13,4 @@ class ScrapeBotBaseSetting(BaseSettings):
     AUTH_TOKEN: str = Field("atlys_test")
 
 
-settings = ScrapeBotBaseSetting() # type: ignore
+settings = ScrapeBotBaseSetting()  # type: ignore

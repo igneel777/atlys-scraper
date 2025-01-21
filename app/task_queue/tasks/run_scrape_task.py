@@ -1,3 +1,4 @@
+import re
 import time
 
 import requests
@@ -7,7 +8,7 @@ from celery.utils.log import get_task_logger
 
 from app.core import constants
 from app.core.config import settings
-from app.core.datastore import LocalFileStore
+from app.core.datastore import LocalFileStore, RedisAdapter
 from app.core.dependencies.service_dependencies import get_product_service
 from app.core.models import NotificationPayload, ProductInDB
 from app.task_queue.celery_app import send_notification
@@ -22,7 +23,8 @@ class Scraper:
 
     def __init__(self, proxy: str | None = None):
         self.proxies = {"http": proxy, "https": proxy} if proxy else None
-        self.file_store = LocalFileStore(settings.LOCAL_FILESTORE_PATH)
+        self.file_store = LocalFileStore()
+        self.cache_store = RedisAdapter()
 
     def _get_page_html(self, page_num: int) -> str:
         url = self.base_url + f"{page_num}/"
@@ -59,6 +61,14 @@ class Scraper:
     def _save_image_in_filestore(self, source_url: str, image_key: str) -> str:
         return self.file_store.save_file_from_url(source_url, image_key)
 
+    def _get_price_from_str(self, price_str: str) -> float:
+        match = re.match(r"₹([\d.]+)", price_str)
+        if match:
+            amount = float(match.group(1))
+        else:
+            amount = 0.0
+        return amount
+
     def _get_product_list(self, html_page: str) -> list[ProductInDB]:
         soup = BeautifulSoup(html_page, "html.parser")
         products_html = soup.find_all("div", class_="product-inner")
@@ -66,7 +76,10 @@ class Scraper:
         product_list = []
         for product_html in products_html:
             try:
-                price = product_html.find("span", class_="price").find("bdi").get_text()
+                price_str = (
+                    product_html.find("span", class_="price").find("bdi").get_text()
+                )
+                price = self._get_price_from_str(price_str)
                 product_name = (
                     product_html.find("h2", class_="woo-loop-product__title")
                     .get_text()
@@ -76,14 +89,17 @@ class Scraper:
                 image_key = f"{product_name}.jpg"
                 image_key = self._save_image_in_filestore(image_url, image_key)
 
-                product_list.append(
-                    ProductInDB(
-                        price=price,
-                        product_name=product_name,
-                        image_url=image_url,
-                        image_key=image_key,
+                cached_value = self.cache_store.get_values(product_name)
+                if not cached_value or cached_value != price:
+                    self.cache_store.set_values(product_name, price, {"days": 1})
+                    product_list.append(
+                        ProductInDB(
+                            price=price,
+                            product_name=product_name,
+                            image_url=image_url,
+                            image_key=image_key,
+                        )
                     )
-                )
             except Exception as ex:
                 logger.error(ex)
                 pass

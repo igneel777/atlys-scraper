@@ -13,7 +13,7 @@ class RedisAdapter(BaseCacheStore):
     store: redis.Redis
 
     def __init__(self) -> None:
-        
+
         if not RedisAdapter.store:
             redis_connection_pool = ConnectionPool.from_url(
                 settings.REDIS_URL.unicode_string()
@@ -40,4 +40,3 @@ class RedisAdapter(BaseCacheStore):
 
     def delete(self, key: str) -> None:
         RedisAdapter.store.delete(key)
-

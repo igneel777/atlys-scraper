@@ -26,11 +26,11 @@
   1. We will be using Redis as our message queue and cache store.
   2. We will simply use docker to run redis.
   3. Use `https://www.docker.com/` to download docker.
-  4. Once docker deamon is up and running. We will start a container with redis in it and expose the port for our application to use.
+  4. Once docker deamon is up and running, We will start a container with redis in it and expose the port for our application to use.
      ```bash
      docker run -d -p6379:6379 redis
      ```
-     This will pull the latest redis image and run it in detatched mode. Note you 
+     This will pull the latest redis image and run it in detatched mode. Note you will see the container id in terminal once the container is up and running.
 </details>
 
 <details>
@@ -62,9 +62,9 @@
   5. We are using abstract classes where ever possible so as to extend the same and move on to a new provider with ease. For example the cache store can be extended to use a new adapter instead of Redis. This means we simply implement the functions and change the initiation of cache store to move to a new cache provider.
   6. The Databse is structured to mimic a real database as much as possible. This means a json file is opened and its TextWrapper is being passed as connection.
   7. A similar set up is being used for Notification. To start sending notifications to a new place, say slack or websocket, we will simply need to extend the base notifier and implement the functions.
-  8. Once the new class is ready we simply add it to notificatino sender. NotificationSender takes care of sending all notifications. Other services need to only send the payload of Notification to NotificationSender.
+  8. Once the new class is ready we simply add it to notification sender. NotificationSender takes care of sending all notifications. Other services need to only send the payload of Notification to NotificationSender.
 
-# Improvemets
+# Improvements
   1. Rate limiter can be implemented for scraping network calls. Since we are already using Redis, We can have a luna script that adds the time stamp of last request made. This way we can space out the requests to the scraping website so as to not get blocked.
   2. This also ensures that if workers are on different machines we will space out the requests.
   3. Instead of updating the entry, we are simply appending the list of products. This logic can be improved upon to search through json and and then update. 

@@ -7,9 +7,9 @@ from bs4 import BeautifulSoup
 from celery.utils.log import get_task_logger
 
 from app.core import constants
-from app.core.config import settings
-from app.core.datastore import LocalFileStore, RedisAdapter
 from app.core.dependencies.service_dependencies import get_product_service
+from app.core.dependencies.shared_dependencies import (get_cache_store,
+                                                       get_filestore)
 from app.core.models import NotificationPayload, ProductInDB
 from app.task_queue.celery_app import send_notification
 
@@ -23,8 +23,8 @@ class Scraper:
 
     def __init__(self, proxy: str | None = None):
         self.proxies = {"http": proxy, "https": proxy} if proxy else None
-        self.file_store = LocalFileStore()
-        self.cache_store = RedisAdapter()
+        self.file_store = get_filestore()
+        self.cache_store = get_cache_store()
 
     def _get_page_html(self, page_num: int) -> str:
         url = self.base_url + f"{page_num}/"

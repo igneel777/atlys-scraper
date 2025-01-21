@@ -7,7 +7,7 @@ from celery.signals import (after_setup_logger, after_setup_task_logger,
                             task_prerun)
 
 from app.core.config import settings
-from app.core.datastore import LocalDatabase
+from app.core.dependencies.shared_dependencies import get_database
 from app.core.models.notification import NotificationPayload
 
 celery_app = Celery(broker=settings.REDIS_URL.unicode_string())
@@ -49,13 +49,13 @@ def setup_task_logger(logger: Logger, *args, **kwargs):
 @task_prerun.connect
 def reset_connection(**kwargs):
     # This will run before every task
-    local_db = LocalDatabase()
+    local_db = get_database()
     local_db.refresh_connection()
 
 
 @contextmanager
 def _get_dependencies():
-    local_db = LocalDatabase()
+    local_db = get_database()
     local_db.refresh_connection()
 
     db_connection = local_db.get_connection()
@@ -64,8 +64,6 @@ def _get_dependencies():
     dependencies["db_connection"] = db_connection
 
     yield dependencies
-
-    db_connection.close()
 
 
 @celery_app.task(autoretry_for=(Exception,), retry_kwargs={"max_retries": 0})

@@ -5,14 +5,14 @@ from app.core.config import settings
 
 from app.api.router import main_api_router
 from app.api.middleware import RequestLogMiddleware
-
+from app.app_lifespan import lifespan
 
 def create_app():
     """
     Factory responsible for bootstrapping and creating the FastAPI application.
     """
 
-    app = FastAPI(title=settings.APP_TITLE)
+    app = FastAPI(title=settings.APP_TITLE, lifespan=lifespan)
 
 
     app.include_router(main_api_router)

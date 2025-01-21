@@ -3,7 +3,7 @@ from typing import Any
 
 
 class BaseCacheStore(ABC):
-    store: Any
+    store: Any = None
 
     @abstractmethod
     def set_values(self, key: str, value, expiry: dict[str, Any]) -> dict[str, Any]:

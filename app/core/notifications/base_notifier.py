@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from app.core.models.notification import NotificationPayload
+from app.core.models import NotificationPayload
 
 
-class BaseNotifier:
+class BaseNotifier(ABC):
     @abstractmethod
     def __init__(self):
         pass

@@ -1,6 +1,6 @@
 from logging import Logger
 
-from app.core.models.notification import NotificationPayload
+from app.core.models import NotificationPayload
 from app.core.notifications.console_notifier import ConsoleNotifier
 
 

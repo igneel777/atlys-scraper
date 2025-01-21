@@ -2,8 +2,10 @@
 name = "atlys-bhavesh"
 version = "0.1.0"
 description = ""
-authors = ["igneel777 <bhavesh@instill.ai>"]
+authors = ["igneel777 <navandarbhavesh@gmail.com>"]
 readme = "README.md"
+package-mode = false
+
 
 [tool.poetry.dependencies]
 python = "^3.10"

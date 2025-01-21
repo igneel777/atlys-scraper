@@ -1,3 +1,7 @@
-*/data/file_store*
+**/data/file_store/*
 __pycache__/
 .DS_Store
+
+**/data/local_database.json
+
+*.log

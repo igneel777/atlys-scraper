@@ -7,6 +7,7 @@
   2. This constraint will cause issues when running poetry since this is a hard requirement.
   3. You can use asdf version manager to easily install different python interpreter. Simply go to the project root and enter 
       ```bash
+     asdf plugin add python
      asdf install
       ```
   4. Once your python interpreter is ready, please install poetry.

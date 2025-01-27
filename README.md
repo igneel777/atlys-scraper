@@ -53,6 +53,9 @@
   ```
 </details>
 
+Note the Auth token is set as `atlys_test`
+More settings and constants can be found in file app/core/constants.py and app/core/config.py
+
 # Design Decisions
 
   1. The EP is designed to simply queue the scraping of the page requested. This is done because the scraping could mean a lot of retries and and network calls which will be better suited for background processing.

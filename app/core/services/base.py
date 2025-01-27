@@ -24,6 +24,7 @@ class BaseService(Generic[ModelType]):
         data_in_file.setdefault(model_name, []).append(obj.model_dump(mode="json"))
         self.db_connection.seek(0)
         json.dump(data_in_file, self.db_connection, ensure_ascii=False, indent=4)
+        self.db_connection.flush()
 
     def insert_in_db_bulk(self, obj_list: list[ModelType]):
         self.db_connection.seek(0)
@@ -38,3 +39,4 @@ class BaseService(Generic[ModelType]):
         data_in_file.setdefault(model_name, []).extend(insert_list)
         self.db_connection.seek(0)
         json.dump(data_in_file, self.db_connection, ensure_ascii=False, indent=4)
+        self.db_connection.flush()
